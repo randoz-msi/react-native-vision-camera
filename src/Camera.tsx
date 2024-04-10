@@ -464,14 +464,12 @@ export class Camera extends React.PureComponent<CameraProps, CameraState> {
 
     // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
     if (device == null) {
-      throw new CameraRuntimeError(
-        'device/no-device',
+      throw new Error(
         'Camera: `device` is null! Select a valid Camera device. See: https://mrousavy.com/react-native-vision-camera/docs/guides/devices',
       )
     }
 
     const shouldEnableBufferCompression = props.video === true && frameProcessor == null
-    const pixelFormat = props.pixelFormat ?? (frameProcessor != null ? 'yuv' : 'native')
     const torch = this.state.isRecordingWithFlash ? 'on' : props.torch
 
     return (
@@ -489,7 +487,6 @@ export class Camera extends React.PureComponent<CameraProps, CameraState> {
         codeScannerOptions={codeScanner}
         enableFrameProcessor={frameProcessor != null}
         enableBufferCompression={props.enableBufferCompression ?? shouldEnableBufferCompression}
-        pixelFormat={pixelFormat}
       />
     )
   }

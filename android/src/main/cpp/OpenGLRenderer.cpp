@@ -29,11 +29,10 @@ OpenGLRenderer::OpenGLRenderer(std::shared_ptr<OpenGLContext> context, ANativeWi
 }
 
 OpenGLRenderer::~OpenGLRenderer() {
-  __android_log_print(ANDROID_LOG_INFO, TAG, "Destroying OpenGLRenderer...");
-  destroy();
   if (_outputSurface != nullptr) {
     ANativeWindow_release(_outputSurface);
   }
+  destroy();
 }
 
 void OpenGLRenderer::destroy() {

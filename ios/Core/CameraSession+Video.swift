@@ -54,8 +54,6 @@ extension CameraSession {
           // Something went wrong, we have an error
           if error.domain == "capture/aborted" {
             onError(.capture(.aborted))
-          } else if error.code == -11807 {
-            onError(.capture(.insufficientStorage))
           } else {
             onError(.capture(.unknown(message: "An unknown recording error occured! \(error.code) \(error.description)")))
           }

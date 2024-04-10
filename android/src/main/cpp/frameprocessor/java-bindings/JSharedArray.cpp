@@ -17,8 +17,7 @@ jni::local_ref<JSharedArray::javaobject> JSharedArray::create(jsi::Runtime& runt
 
 JSharedArray::JSharedArray(jsi::Runtime& runtime, std::shared_ptr<jsi::ArrayBuffer> arrayBuffer) {
   size_t size = arrayBuffer->size(runtime);
-  __android_log_print(ANDROID_LOG_INFO, TAG, "Wrapping JSI ArrayBuffer with size %zu...", size);
-  jni::local_ref<JByteBuffer> byteBuffer = JByteBuffer::wrapBytes(arrayBuffer->data(runtime), size);
+  jni::local_ref<JByteBuffer> byteBuffer = JByteBuffer::allocateDirect(size);
 
   _arrayBuffer = arrayBuffer;
   _byteBuffer = jni::make_global(byteBuffer);
@@ -34,7 +33,7 @@ JSharedArray::JSharedArray(const jni::alias_ref<jhybridobject>& javaThis, const 
 #else
   jsi::Runtime& runtime = *proxy->cthis()->getJSRuntime();
 #endif
-  __android_log_print(ANDROID_LOG_INFO, TAG, "Wrapping Java ByteBuffer with size %zu...", byteBuffer->getDirectSize());
+  __android_log_print(ANDROID_LOG_INFO, TAG, "Allocating ArrayBuffer with size %i...", byteBuffer->getDirectSize());
   _byteBuffer = jni::make_global(byteBuffer);
   _size = _byteBuffer->getDirectSize();
 
@@ -44,9 +43,7 @@ JSharedArray::JSharedArray(const jni::alias_ref<jhybridobject>& javaThis, const 
 
 JSharedArray::JSharedArray(const jni::alias_ref<JSharedArray::jhybridobject>& javaThis,
                            const jni::alias_ref<JVisionCameraProxy::javaobject>& proxy, int size)
-    : JSharedArray(javaThis, proxy, JByteBuffer::allocateDirect(size)) {
-  __android_log_print(ANDROID_LOG_INFO, TAG, "Allocating SharedArray with size %i...", size);
-}
+    : JSharedArray(javaThis, proxy, JByteBuffer::allocateDirect(size)) {}
 
 void JSharedArray::registerNatives() {
   registerHybrid({

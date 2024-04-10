@@ -1,4 +1,4 @@
-import type { AutoFocusSystem, CameraDevice, CameraDeviceFormat, VideoStabilizationMode } from '../CameraDevice'
+import type { CameraDevice, CameraDeviceFormat, VideoStabilizationMode } from '../CameraDevice'
 import { CameraRuntimeError } from '../CameraError'
 import { PixelFormat } from '../PixelFormat'
 
@@ -74,12 +74,6 @@ export interface FormatFilter {
    * Lower ISO values tend to capture photos quicker.
    */
   iso?: number | 'max' | 'min'
-  /**
-   * The target auto-focus system.
-   * While `phase-detection` is generally the best system available,
-   * you might want to choose a different auto-focus system.
-   */
-  autoFocusSystem?: AutoFocusSystem
 }
 
 type FilterWithPriority<T> = {
@@ -218,34 +212,26 @@ export function getCameraFormat(device: CameraDevice, filters: FormatFilter[]): 
 
     // Find video stabilization mode
     if (filter.videoStabilizationMode != null) {
-      if (bestFormat.videoStabilizationModes.includes(filter.videoStabilizationMode.target))
-        leftPoints += filter.videoStabilizationMode.priority
-      if (format.videoStabilizationModes.includes(filter.videoStabilizationMode.target))
-        rightPoints += filter.videoStabilizationMode.priority
+      if (bestFormat.videoStabilizationModes.includes(filter.videoStabilizationMode.target)) leftPoints++
+      if (format.videoStabilizationModes.includes(filter.videoStabilizationMode.target)) rightPoints++
     }
 
     // Find pixel format
     if (filter.pixelFormat != null) {
-      if (bestFormat.pixelFormats.includes(filter.pixelFormat.target)) leftPoints += filter.pixelFormat.priority
-      if (format.pixelFormats.includes(filter.pixelFormat.target)) rightPoints += filter.pixelFormat.priority
+      if (bestFormat.pixelFormats.includes(filter.pixelFormat.target)) leftPoints++
+      if (format.pixelFormats.includes(filter.pixelFormat.target)) rightPoints++
     }
 
     // Find Photo HDR formats
     if (filter.photoHdr != null) {
-      if (bestFormat.supportsPhotoHdr === filter.photoHdr.target) leftPoints += filter.photoHdr.priority
-      if (format.supportsPhotoHdr === filter.photoHdr.target) rightPoints += filter.photoHdr.priority
+      if (bestFormat.supportsPhotoHdr === filter.photoHdr.target) leftPoints++
+      if (format.supportsPhotoHdr === filter.photoHdr.target) rightPoints++
     }
 
     // Find Video HDR formats
     if (filter.videoHdr != null) {
-      if (bestFormat.supportsVideoHdr === filter.videoHdr.target) leftPoints += filter.videoHdr.priority
-      if (format.supportsVideoHdr === filter.videoHdr.target) rightPoints += filter.videoHdr.priority
-    }
-
-    // Find matching AF system
-    if (filter.autoFocusSystem != null) {
-      if (bestFormat.autoFocusSystem === filter.autoFocusSystem.target) leftPoints += filter.autoFocusSystem.priority
-      if (format.autoFocusSystem === filter.autoFocusSystem.target) rightPoints += filter.autoFocusSystem.priority
+      if (bestFormat.supportsVideoHdr === filter.videoHdr.target) leftPoints++
+      if (format.supportsVideoHdr === filter.videoHdr.target) rightPoints++
     }
 
     if (rightPoints > leftPoints) bestFormat = format

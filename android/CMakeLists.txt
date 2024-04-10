@@ -1,6 +1,8 @@
 project(VisionCamera)
 cmake_minimum_required(VERSION 3.9.0)
 
+
+set(CMAKE_VERBOSE_MAKEFILE ON)
 set(PACKAGE_NAME "VisionCamera")
 set(BUILD_DIR ${CMAKE_SOURCE_DIR}/build)
 set(CMAKE_VERBOSE_MAKEFILE ON)
@@ -67,6 +69,7 @@ target_link_libraries(
         fbjni::fbjni                        # <-- fbjni
         GLESv2                              # <-- OpenGL (for VideoPipeline)
         EGL                                 # <-- OpenGL (EGL) (for VideoPipeline)
+        "${NODE_MODULES_DIR}/react-native-worklets-core/android/build/intermediates/cmake/debug/obj/${ANDROID_ABI}/librnworklets.so"
 )
 
 # Optionally also add Frame Processors here
